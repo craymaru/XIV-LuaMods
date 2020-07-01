@@ -1,0 +1,10 @@
+*
+!*/
+
+!/CrayTweaks/**
+
+!/README.md
+!/.gitignore
+
+.DS_Store
+Thumbs.db

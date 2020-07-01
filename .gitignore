@@ -1,10 +1,11 @@
 *
-!*/
-
-!/CrayTweaks/**
+*/
 
 !/README.md
 !/.gitignore
+
+
+!/CrayTweaks/**
 
 .DS_Store
 Thumbs.db

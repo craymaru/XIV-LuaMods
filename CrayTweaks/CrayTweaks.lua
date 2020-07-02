@@ -7,9 +7,10 @@ cray_tweaks.neverSkip = {
 	cutscene = true,
 	talk = true,
 }
-cray_tweaks.legacySupport = {
+cray_tweaks.legacyMovementSupport = {
 	isEnable = true,
-	botRan = true
+	botRan = true,
+	assistRan = true,
 }
 
 function cray_tweaks.Init()
@@ -26,20 +27,31 @@ function cray_tweaks.OnUpdate( event, tickcount )
 		gSkipTalk = false
 	end
 
-	if not cray_tweaks.legacySupport.botRan and
-	FFXIV_Common_BotRunning and
-	gBotMode ~= GetString("assistMode")
-	then
-		cray_tweaks.legacySupport.botRan = true
-	end
 
-	if cray_tweaks.legacySupport.isEnable and cray_tweaks.legacySupport.botRan then
-		if ( not FFXIV_Common_BotRunning ) or
-		( FFXIV_Common_BotRunning and gBotMode == GetString("assistMode") )
-		then
+	if cray_tweaks.legacyMovementSupport.isEnable then
+
+		if ( not cray_tweaks.legacyMovementSupport.assistRan ) and ( FFXIV_Common_BotRunning ) and ( gBotMode == GetString("assistMode") ) then
 			gAssistUseLegacy = true
 			ml_global_information.GetMovementInfo(false)
-			cray_tweaks.legacySupport.botRan = false
+			cray_tweaks.legacyMovementSupport.assistRan = true
+		end
+
+		if ( cray_tweaks.legacyMovementSupport.assistRan ) and ( not FFXIV_Common_BotRunning ) and ( gBotMode == GetString("assistMode") ) then
+			gAssistUseLegacy = true
+			ml_global_information.GetMovementInfo(false)
+			cray_tweaks.legacyMovementSupport.assistRan = false
+		end
+
+		if not cray_tweaks.legacyMovementSupport.botRan then
+			if FFXIV_Common_BotRunning and gBotMode ~= GetString("assistMode") then
+				cray_tweaks.legacyMovementSupport.botRan = true
+			end
+		end
+
+		if cray_tweaks.legacyMovementSupport.botRan and not FFXIV_Common_BotRunning then
+			gAssistUseLegacy = true
+			ml_global_information.GetMovementInfo(false)
+			cray_tweaks.legacyMovementSupport.botRan = false
 		end
 	end
 
@@ -53,8 +65,9 @@ function cray_tweaks.Draw( event, ticks )
 		cray_tweaks.GUI.visible, cray_tweaks.GUI.open = GUI:Begin("CrayTweaks", cray_tweaks.GUI.open)
  
 		if ( cray_tweaks.GUI.visible ) then
-			cray_tweaks.legacySupport.isEnable = GUI:Checkbox(GetString("Legacy Support"),cray_tweaks.legacySupport.isEnable)
-			cray_tweaks.legacySupport.botRan = GUI:Checkbox(GetString("botRan"),cray_tweaks.legacySupport.botRan)
+			cray_tweaks.legacyMovementSupport.isEnable = GUI:Checkbox(GetString("Legacy Move Support"),cray_tweaks.legacyMovementSupport.isEnable)
+			-- cray_tweaks.legacyMovementSupport.botRan = GUI:Checkbox(GetString("botRan"),cray_tweaks.legacyMovementSupport.botRan)
+			-- cray_tweaks.legacyMovementSupport.assistRan = GUI:Checkbox(GetString("assistRan"),cray_tweaks.legacyMovementSupport.assistRan)
 
 			if (GUI:IsItemHovered()) then
 				GUI:SetTooltip("This option sets automatically turn on Legacy movement mode when the bot is off. (Even in assault mode.)")

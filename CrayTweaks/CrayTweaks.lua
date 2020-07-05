@@ -1,20 +1,9 @@
 local cray_tweaks = {}
 cray_tweaks.GUI = {
-	open = true,
+	open = false,
 	visible = true,
 }
-cray_tweaks.neverSkip = {
-	cutscene = true,
-	talk = true,
-}
-cray_tweaks.neverSkipCutscene = {
-	isEnable = true,
-}
-cray_tweaks.neverSkipTalk = {
-	isEnable = true,
-}
 cray_tweaks.smartLegacyMovement = {
-	isEnable = true,
 	botRan = true,
 	assistRan = true,
 }
@@ -24,21 +13,20 @@ function cray_tweaks.Init()
 	ml_gui.ui_mgr:AddMember({ id = "FFXIVMINION##MENU_CrayTweaks", name = "CrayTweaks", onClick = function() cray_tweaks.GUI.open = not cray_tweaks.GUI.open end, tooltip = "Open the CrayTweaks settings."},"FFXIVMINION##MENU_HEADER")
 	
 	ctTestValue = ffxivminion.GetSetting("ctTestValue", true)
-	cray_tweaks.neverSkipCutscene.isEnable = ffxivminion.GetSetting("neverSkipCutscene", true)
-	cray_tweaks.neverSkipTalk.isEnable = ffxivminion.GetSetting("neverSkipTalk", true)
-	cray_tweaks.smartLegacyMovement.isEnable = ffxivminion.GetSetting("smartLegacyMovement", true)
-
+	ctNeverSkipCutscene = ffxivminion.GetSetting("ctNeverSkipCutscene", true)
+	ctNeverSkipTalk = ffxivminion.GetSetting("ctNeverSkipTalk", true)
+	ctSmartLegacyMovement = ffxivminion.GetSetting("ctSmartLegacyMovement", true)
 end
 
 
 
 function cray_tweaks.OnUpdate( event, tickcount )
 
-	if cray_tweaks.neverSkipCutscene.isEnable and gSkipCutscene == true then
+	if ctNeverSkipCutscene and gSkipCutscene == true then
 		gSkipCutscene = false
 	end
 
-	if cray_tweaks.neverSkipTalk.isEnable and gSkipTalk == true then
+	if ctNeverSkipTalk and gSkipTalk == true then
 		gSkipTalk = false
 	end
 
@@ -47,7 +35,7 @@ function cray_tweaks.OnUpdate( event, tickcount )
 		ml_global_information.GetMovementInfo(false)
 	end
 
-	if cray_tweaks.smartLegacyMovement.isEnable then
+	if ctSmartLegacyMovement then
 
 		if ( not cray_tweaks.smartLegacyMovement.assistRan ) and ( FFXIV_Common_BotRunning ) and ( gBotMode == GetString("assistMode") ) then
 			setLegacyMovement()
@@ -82,7 +70,7 @@ function cray_tweaks.Draw( event, ticks )
  
 		if ( cray_tweaks.GUI.visible ) then
 			
-			GUI_Capture(GUI:Checkbox(GetString("Smart Legacy Movement"),cray_tweaks.smartLegacyMovement.isEnable),"smartLegacyMovement")
+			GUI_Capture(GUI:Checkbox(GetString("Smart Legacy Movement"),ctSmartLegacyMovement),"ctSmartLegacyMovement")
 			if (GUI:IsItemHovered()) then
 				GUI:SetTooltip("This option sets automatically turn on Legacy movement mode when the bot is off. (Even in assault mode.)")
 			end
@@ -91,11 +79,11 @@ function cray_tweaks.Draw( event, ticks )
 			GUI:Separator();
 			GUI:Spacing();
 
-			GUI_Capture(GUI:Checkbox(GetString("Never Skip Cutscene"),cray_tweaks.neverSkipCutscene.isEnable),"neverSkipCutscene")
+			GUI_Capture(GUI:Checkbox(GetString("Never Skip Cutscene"),ctNeverSkipCutscene),"ctNeverSkipCutscene")
 			if (GUI:IsItemHovered()) then
 				GUI:SetTooltip("This option sets automatically turn off Skip Cutscene when it turn on. (Please turn on Allow Cutscene Watching in Letty's Addon)")
 			end
-			GUI_Capture(GUI:Checkbox(GetString("Never Skip Dialog"),cray_tweaks.neverSkipTalk.isEnable),"neverSkipTalk")
+			GUI_Capture(GUI:Checkbox(GetString("Never Skip Dialog"),ctNeverSkipTalk),"ctNeverSkipTalk")
 			if (GUI:IsItemHovered()) then
 				GUI:SetTooltip("This option sets automatically turn off Skip Dialog when it turn on. (Please turn on Allow Dialog Watching in Letty's Addon)")
 			end

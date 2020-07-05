@@ -1,6 +1,6 @@
 [Module]
 Name=CrayTweaks
-Version=1
+Version=1.1
 Files=CrayTweaks.lua
 Dependencies=minionlib
 Enabled=1

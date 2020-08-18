@@ -3,10 +3,6 @@ cray_tweaks.GUI = {
 	open = false,
 	visible = true,
 }
-cray_tweaks.smartLegacyMovement = {
-	botRan = true,
-	assistRan = true,
-}
 
 
 function cray_tweaks.Init()
@@ -18,44 +14,28 @@ function cray_tweaks.Init()
 	ctSmartLegacyMovement = ffxivminion.GetSetting("ctSmartLegacyMovement", true)
 end
 
-
-
 function cray_tweaks.OnUpdate( event, tickcount )
 
 	if ctNeverSkipCutscene and gSkipCutscene == true then
+		d( "[CrayTweaks] - gSkipCutscene = false" )
 		gSkipCutscene = false
 	end
 
 	if ctNeverSkipTalk and gSkipTalk == true then
+		d( "[CrayTweaks] - gSkipTalk = false" )
 		gSkipTalk = false
 	end
 
-	function setLegacyMovement()
-		gAssistUseLegacy = true
-		ml_global_information.GetMovementInfo(false)
-	end
-
 	if ctSmartLegacyMovement then
+		if not Player:IsMoving() and Player.settings.movemode == 0 then
 
-		if ( not cray_tweaks.smartLegacyMovement.assistRan ) and ( FFXIV_Common_BotRunning ) and ( gBotMode == GetString("assistMode") ) then
-			setLegacyMovement()
-			cray_tweaks.smartLegacyMovement.assistRan = true
-		end
+			d( "[CrayTweaks] - Player:SetMoveMode(1)" )
+			Player:SetMoveMode(1)
 
-		if ( cray_tweaks.smartLegacyMovement.assistRan ) and ( not FFXIV_Common_BotRunning ) and ( gBotMode == GetString("assistMode") ) then
-			setLegacyMovement()
-			cray_tweaks.smartLegacyMovement.assistRan = false
-		end
-
-		if not cray_tweaks.smartLegacyMovement.botRan then
-			if FFXIV_Common_BotRunning and gBotMode ~= GetString("assistMode") then
-				cray_tweaks.smartLegacyMovement.botRan = true
+			if not gAssistUseLegacy then
+				gAssistUseLegacy = true
 			end
-		end
 
-		if cray_tweaks.smartLegacyMovement.botRan and not FFXIV_Common_BotRunning then
-			setLegacyMovement()
-			cray_tweaks.smartLegacyMovement.botRan = false
 		end
 	end
 
@@ -104,4 +84,4 @@ end
 RegisterEventHandler("Module.Initalize",cray_tweaks.Init,"cray_tweaks.Init")
 RegisterEventHandler("CrayTweaks.toggle", cray_tweaks.ToggleMenu, "cray_tweaks.ToggleMenu")
 RegisterEventHandler("Gameloop.Update",cray_tweaks.OnUpdate, "cray_tweaks.OnUpdate")
-RegisterEventHandler("Gameloop.Draw", cray_tweaks.Draw, "cray_tweaks-AnyNameHereToIdentYourCodeInCaseOfError")
+RegisterEventHandler("Gameloop.Draw", cray_tweaks.Draw, "cray_tweaks.Draw")

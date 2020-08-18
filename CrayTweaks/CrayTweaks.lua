@@ -29,8 +29,10 @@ function cray_tweaks.OnUpdate( event, tickcount )
 	if ctSmartLegacyMovement then
 		if not Player:IsMoving() and Player.settings.movemode == 0 then
 
-			d( "[CrayTweaks] - Player:SetMoveMode(1)" )
-			Player:SetMoveMode(1)
+			if not FFXIV_Common_BotRunning or gBotMode == GetString("assistMode") then
+				d( "[CrayTweaks] - Player:SetMoveMode(1)" )
+				Player:SetMoveMode(1)
+			end
 
 			if not gAssistUseLegacy then
 				gAssistUseLegacy = true
